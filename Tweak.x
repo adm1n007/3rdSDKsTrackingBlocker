@@ -87,12 +87,13 @@ extern char*** _NSGetArgv();
         %init;
 
         // for Swift Version of Mixpanel SDK
-        // MSFindSymbol() seems to have some impact on performance, I don't know any good way
-        void *mixpanel_swift_func_addr = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC5flush10completionyyycSg_tF");
-        void *mixpanel_swift_func_addr2 = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC11checkDecide10forceFetch10completionySb_yAA0D8ResponseVSgctF");
-        if (mixpanel_swift_func_addr && mixpanel_swift_func_addr2) {
-            MSHookFunction(mixpanel_swift_func_addr, (void *)hook_mixpanel_func, NULL);
-            MSHookFunction(mixpanel_swift_func_addr2, (void *)hook_mixpanel_func, NULL);
+        if (objc_getClass("_TtC8Mixpanel16MixpanelInstance")) {
+            void *mixpanel_swift_func_addr = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC5flush10completionyyycSg_tF");
+            void *mixpanel_swift_func_addr2 = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC11checkDecide10forceFetch10completionySb_yAA0D8ResponseVSgctF");
+            if (mixpanel_swift_func_addr && mixpanel_swift_func_addr2) {
+                MSHookFunction(mixpanel_swift_func_addr, (void *)hook_mixpanel_func, NULL);
+                MSHookFunction(mixpanel_swift_func_addr2, (void *)hook_mixpanel_func, NULL);
+            }
         }
     }
 }
