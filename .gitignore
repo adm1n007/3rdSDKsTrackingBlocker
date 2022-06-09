@@ -1,4 +1,6 @@
 .gitattributes
 .vscode
 .idea
+.theos
+packages
 .DS_Store

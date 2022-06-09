@@ -27,6 +27,11 @@
     return;
 }
 %end
+%hook Bugsnag
++ (id)startWithConfiguration:(id)a1 {
+    return nil;
+}
+%end
 %hook BLYDevice
 - (bool)isJailbroken {
     return false;
@@ -35,6 +40,31 @@
 %hook FIRApp
 + (void)configureWithName:(id)a1 options:(id)a2 {
     return;
+}
+%end
+%hook KSCrashInstallation
+- (void)sendAllReportsWithCompletion:(id)block {
+    return;
+}
+%end
+%hook NTESCrashLogger
++ (void)log:(id)a1 {
+    return;
+}
+%end
+%hook NTESCrashReporter
++ (id)sharedInstance {
+    return nil;
+}
+%end
+%hook NTESJSCrashReporter
++ (id)sharedInstance {
+    return nil;
+}
+%end
+%hook PLCrashReporter
+- (id)initWithApplicationIdentifier:(id)a1 appVersion:(id)a2 appMarketingVersion:(id)a3 configuration:(id)a4 {
+    return nil;
 }
 %end
 %hook UMConfigure
@@ -50,6 +80,11 @@
 %hook UMessage
 + (void)registerForRemoteNotificationsWithLaunchOptions:(id)a1 Entity:(id)a2 completionHandler:(id)a3 {
     return;
+}
+%end
+%hook Matrix
++ (id)sharedInstance {
+    return nil;
 }
 %end
 %hook MobClick
