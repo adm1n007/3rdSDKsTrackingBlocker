@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #include <substrate.h>
-#include <string.h>
 
 %hook AppsFlyerLib
 - (id)init {
@@ -10,6 +9,11 @@
 %hook AppsFlyerUtils
 + (bool)isJailbrokenWithSkipAdvancedJailbreakValidation:(bool)a1 {
     return false;
+}
+%end
+%hook APMMeasurement
+- (void)setEnabled:(bool)a1 {
+    return;
 }
 %end
 %hook Amplitude
@@ -42,6 +46,11 @@
     return;
 }
 %end
+%hook GADSettings
+- (id)init {
+    return nil;
+}
+%end
 %hook KSCrashInstallation
 - (void)sendAllReportsWithCompletion:(id)block {
     return;
@@ -65,6 +74,11 @@
 %hook PLCrashReporter
 - (id)initWithApplicationIdentifier:(id)a1 appVersion:(id)a2 appMarketingVersion:(id)a3 configuration:(id)a4 {
     return nil;
+}
+%end
+%hook TGGDTLogger
++ (bool)reportSDKGDTlog:(id)a1 {
+    return false;
 }
 %end
 %hook UMConfigure
@@ -113,21 +127,30 @@
 }
 %end
 
-static int hook_mixpanel_func(void) {
+static int none(void) {
     return 0;
 }
 extern char*** _NSGetArgv();
 %ctor {
-    if (strstr(**_NSGetArgv(), "Application") && ![NSBundle.mainBundle.bundleIdentifier hasPrefix:@"com.apple"]) {
-        %init;
+    @autoreleasepool {
+        if (strstr(**_NSGetArgv(), "Application") && ![NSBundle.mainBundle.bundleIdentifier hasPrefix:@"com.apple"]) {
+            %init;
 
-        // for Swift Version of Mixpanel SDK
-        if (objc_getClass("_TtC8Mixpanel16MixpanelInstance")) {
-            void *mixpanel_swift_func_addr = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC5flush10completionyyycSg_tF");
-            void *mixpanel_swift_func_addr2 = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC11checkDecide10forceFetch10completionySb_yAA0D8ResponseVSgctF");
-            if (mixpanel_swift_func_addr && mixpanel_swift_func_addr2) {
-                MSHookFunction(mixpanel_swift_func_addr, (void *)hook_mixpanel_func, NULL);
-                MSHookFunction(mixpanel_swift_func_addr2, (void *)hook_mixpanel_func, NULL);
+            // for Swift Version of Mixpanel SDK
+            if (objc_getClass("_TtC8Mixpanel16MixpanelInstance")) {
+                void *mixpanel_swift_func_addr = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC5flush10completionyyycSg_tF");
+                void *mixpanel_swift_func_addr2 = MSFindSymbol(NULL, "_$s8Mixpanel0A8InstanceC11checkDecide10forceFetch10completionySb_yAA0D8ResponseVSgctF");
+                if (mixpanel_swift_func_addr && mixpanel_swift_func_addr2) {
+                    MSHookFunction(mixpanel_swift_func_addr, (void *)none, NULL);
+                    MSHookFunction(mixpanel_swift_func_addr2, (void *)none, NULL);
+                }
+            }
+
+            if (objc_getClass("ServiceEndpointsBuilder")) {
+                void *func_addr = MSFindSymbol(NULL, "_$s5Split07DefaultA14FactoryBuilderC5buildAA0aC0_pSgyF");
+                if (func_addr) {
+                    MSHookFunction(func_addr, (void *)none, NULL);
+                }
             }
         }
     }
