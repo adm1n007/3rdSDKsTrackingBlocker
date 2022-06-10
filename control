@@ -1,6 +1,6 @@
 Package: nehyci.sdktrackingblocker
 Name: 3rdSDKTrackingBlocker
-Version: 0.0.2.1
+Version: 0.0.3
 Architecture: iphoneos-arm
 Description: 屏蔽一些第三方SDK追踪程序
 Maintainer: nehyci
