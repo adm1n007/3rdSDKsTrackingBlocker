@@ -96,11 +96,24 @@
 %end
 
 %hook FIRApp
++ (void)configure {
+    return;
+}
 + (void)configureWithName:(id)a1 options:(id)a2 {
     return;
 }
 %end
 
+%hook GADBannerView
+- (void)loadRequest:(id)a1 {
+    return;
+}
+%end
+%hook GADMobileAds
++ (void)configureWithApplicationID:(id)a1 {
+    return;
+}
+%end
 %hook GADSettings
 - (id)init {
     return nil;
